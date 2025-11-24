@@ -2,11 +2,11 @@
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { Course } from '../types';
 
-// Padroniza a leitura para usar o prefixo VITE_
-const apiKey = process.env.VITE_GEMINI_API_KEY;
+// Correção: A plataforma exige que a chave se chame API_KEY.
+const apiKey = process.env.API_KEY;
 
 if (!apiKey) {
-    throw new Error("A variável de ambiente VITE_GEMINI_API_KEY não foi configurada.");
+    throw new Error("A variável de ambiente API_KEY não foi configurada. Verifique a configuração na Vercel.");
 }
 const ai = new GoogleGenAI({ apiKey });
 
