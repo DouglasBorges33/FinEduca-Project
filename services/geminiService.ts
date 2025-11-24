@@ -1,8 +1,14 @@
+
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { Course } from '../types';
 
-// Fix: Initialize the Gemini API client according to guidelines.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Padroniza a leitura para usar o prefixo VITE_
+const apiKey = process.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+    throw new Error("A variável de ambiente VITE_GEMINI_API_KEY não foi configurada.");
+}
+const ai = new GoogleGenAI({ apiKey });
 
 // Singleton para manter a sessão do chat ativa enquanto o app estiver aberto
 let chatSession: Chat | null = null;
@@ -128,7 +134,6 @@ export const generateCourse = async (topicTitle: string, difficulty: 'beginner' 
     
     O conteúdo deve ser prático e fácil de entender para o público-alvo.`;
 
-    // Fix: Use gemini-2.5-flash for text generation with a JSON schema and correct API usage.
     const response = await ai.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt,
@@ -138,7 +143,6 @@ export const generateCourse = async (topicTitle: string, difficulty: 'beginner' 
         },
     });
 
-    // Fix: Extract text using `response.text` and parse it as JSON.
     const responseText = response.text;
     if (!responseText) {
         throw new Error("No content generated from API.");
@@ -146,7 +150,6 @@ export const generateCourse = async (topicTitle: string, difficulty: 'beginner' 
     const jsonText = responseText.trim();
     const courseData = JSON.parse(jsonText);
 
-    // Basic validation to ensure the structure is correct
     if (!courseData.description || !Array.isArray(courseData.lessons) || !['tax', 'investment', 'budget'].includes(courseData.icon) || !['beginner', 'intermediate'].includes(courseData.difficulty)) {
         throw new Error("Invalid course structure received from API.");
     }
@@ -230,7 +233,6 @@ export const generateFeatureIcon = async (prompt: string): Promise<string> => {
 
 export const generateAvatar = async (prompt: string): Promise<string> => {
     try {
-        // Fix: Use imagen-4.0-generate-001 for image generation with the correct API.
         const response = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
             prompt: `Um avatar fofo e estilizado para um app de finanças, representando: ${prompt}. Estilo de ícone de aplicativo, minimalista, fundo de cor sólida.`,
@@ -242,7 +244,6 @@ export const generateAvatar = async (prompt: string): Promise<string> => {
         });
         
         if (response.generatedImages && response.generatedImages.length > 0 && response.generatedImages[0].image.imageBytes) {
-            // Fix: Return only the base64 encoded image string. The caller will construct the data URL.
             return response.generatedImages[0].image.imageBytes;
         } else {
             throw new Error("No image was generated.");

@@ -32,7 +32,8 @@ const AuthPage: React.FC = () => {
           email,
           password,
           options: {
-            user_metadata: { 
+            // Fix: `user_metadata` is not a valid property. Changed to `data` to correctly pass user metadata during signup.
+            data: { 
               full_name: fullName,
             }
           }

@@ -1,10 +1,14 @@
+
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://scfpvjfnfrnovmijbglq.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNjZnB2amZuZnJub3ZtaWpiZ2xxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg1ODM0MjQsImV4cCI6MjA3NDE1OTQyNH0.YOIHeffVwVwZIwGhnrmtpfjCe2uxyvIYvrE0PH8UQak';
+// As variáveis agora são lidas com o prefixo VITE_, que a Vercel exige para expô-las.
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
+
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Supabase URL and Key must be provided.');
+  // A mensagem de erro agora reflete os nomes corretos das variáveis.
+  throw new Error('As variáveis VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY não foram encontradas. Verifique a configuração na Vercel.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);

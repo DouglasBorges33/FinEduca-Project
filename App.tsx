@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { AppView, Course, Progress, Goal, PointEvent } from './types';
 import { INITIAL_COURSE_TOPICS } from './constants';
@@ -370,14 +372,15 @@ const App: React.FC = () => {
 
             setCourses(prev => ({ ...prev, [newCourse.id]: newCourse }));
         } catch (err: unknown) {
+            // FIX: Improve error handling for unknown type by using safer type guards and explicit string conversion.
             console.error("Error generating or saving course:", err);
             let errorMessage = "Ocorreu um erro desconhecido ao gerar o curso. Tente novamente.";
             if (err instanceof Error) {
                 errorMessage = err.message;
             } else if (typeof err === 'string') {
-                errorMessage = err as string;
+                errorMessage = err;
             } else if (err && typeof err === 'object' && 'message' in err) {
-                 // Fix: Explicitly convert the unknown 'message' property to a string.
+                 // FIX: Cast error object to 'any' to ensure its message property is correctly handled as a string.
                  errorMessage = String((err as any).message);
             }
             setError(errorMessage);
