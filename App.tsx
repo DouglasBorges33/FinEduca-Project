@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { AppView, Course, Progress, Goal, PointEvent } from './types';
-import { INITIAL_COURSE_TOPICS } from './constants';
+import { INITIAL_COURSE_TOPICS, INITIAL_COURSES_DATA } from './constants';
 import { generateCourse, generateDashboardImage } from './services/geminiService';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
@@ -174,35 +174,33 @@ const App: React.FC = () => {
                     }
                      
                     const userCourseIds = new Set(userCoursesRes.data?.map(c => c.course_id) || []);
-                    const missingTopics = INITIAL_COURSE_TOPICS.filter(topic => !userCourseIds.has(topic.id));
+                    const missingInitialCourse = INITIAL_COURSES_DATA.some(course => !userCourseIds.has(course.id));
 
-                    if (missingTopics.length > 0) {
-                        setLoadingMessage(`Gerando ${missingTopics.length} curso(s) inicial(is)...`);
-
-                        const generationPromises = missingTopics.map(topic =>
-                            generateCourse(topic.title, 'beginner').then(courseContent => ({
-                                id: topic.id,
-                                title: topic.title,
-                                ...courseContent,
-                            } as Course))
-                        );
-
-                        const newCourses = await Promise.all(generationPromises);
+                    if (missingInitialCourse) {
+                        setLoadingMessage(`Configurando seus cursos iniciais...`);
                         
-                        const initialCoursesToInsert = newCourses.map(newCourse => {
-                            loadedCourses[newCourse.id] = newCourse;
-                            return {
-                                user_id: session.user.id,
-                                course_id: newCourse.id,
-                                course_data: newCourse as any,
-                            };
-                        });
+                        const newCoursesToInsert = INITIAL_COURSES_DATA.filter(course => !userCourseIds.has(course.id));
 
-                        if (initialCoursesToInsert.length > 0) {
-                            setLoadingMessage('Salvando cursos iniciais...');
-                            const { error: insertError } = await supabase.from('user_generated_courses').insert(initialCoursesToInsert);
+                        newCoursesToInsert.forEach(course => {
+                            loadedCourses[course.id] = course;
+                        });
+                        
+                        const initialCoursesToSaveToDb = newCoursesToInsert.map(course => ({
+                            user_id: session.user.id,
+                            course_id: course.id,
+                            course_data: course as any,
+                        }));
+
+
+                        if (initialCoursesToSaveToDb.length > 0) {
+                            const { error: insertError } = await supabase.from('user_generated_courses').insert(initialCoursesToSaveToDb);
                             if (insertError) {
                                 console.error("Failed to save initial courses:", insertError);
+                                // Se falhar, remove os cursos do estado local para não mostrar algo que não foi salvo
+                                newCoursesToInsert.forEach(course => {
+                                    delete loadedCourses[course.id];
+                                });
+                                throw insertError; 
                             }
                         }
                     }
