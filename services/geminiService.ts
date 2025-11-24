@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { Course } from '../types';
 
@@ -162,29 +163,6 @@ export const generateCourse = async (topicTitle: string, difficulty: 'beginner' 
   }
 };
 
-export const generateLandingPageImage = async (prompt: string): Promise<string> => {
-    try {
-        const response = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: `${prompt}. Estilo de ilustração vetorial moderno e vibrante, com cores vivas, limpo, para uma landing page de um aplicativo de tecnologia financeira.`,
-            config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/png',
-              aspectRatio: '16:9',
-            },
-        });
-        
-        if (response.generatedImages && response.generatedImages.length > 0 && response.generatedImages[0].image.imageBytes) {
-            return response.generatedImages[0].image.imageBytes;
-        } else {
-            throw new Error("No image was generated.");
-        }
-    } catch (error) {
-        console.error("Error generating landing page image:", error);
-        throw new Error("Failed to generate landing page image. Please try again.");
-    }
-};
-
 export const generateDashboardImage = async (prompt: string): Promise<string> => {
     try {
         const response = await ai.models.generateImages({
@@ -205,29 +183,6 @@ export const generateDashboardImage = async (prompt: string): Promise<string> =>
     } catch (error) {
         console.error("Error generating dashboard image:", error);
         throw new Error("Failed to generate dashboard image. Please try again.");
-    }
-};
-
-export const generateFeatureIcon = async (prompt: string): Promise<string> => {
-    try {
-        const response = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: `${prompt}. Ícone 3D, estilo clay, em um fundo de cor sólida, minimalista, para um aplicativo de tecnologia financeira. Cores vibrantes.`,
-            config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/png',
-              aspectRatio: '1:1',
-            },
-        });
-        
-        if (response.generatedImages && response.generatedImages.length > 0 && response.generatedImages[0].image.imageBytes) {
-            return response.generatedImages[0].image.imageBytes;
-        } else {
-            throw new Error("No image was generated.");
-        }
-    } catch (error) {
-        console.error("Error generating feature icon:", error);
-        throw new Error("Failed to generate feature icon. Please try again.");
     }
 };
 

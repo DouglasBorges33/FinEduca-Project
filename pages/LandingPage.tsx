@@ -1,67 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
-import { generateLandingPageImage, generateFeatureIcon } from '../services/geminiService';
-import Spinner from '../components/Spinner';
 
-const ImagePlaceholder: React.FC<{className?: string}> = ({ className }) => (
-    <div className={`w-full bg-slate-700/50 rounded-lg animate-pulse ${className}`}>
-        <div className="flex items-center justify-center h-full">
-            <Spinner />
-        </div>
-    </div>
-);
+import React from 'react';
 
 interface LandingPageProps {
   onLoginClick: () => void;
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
-    const [heroImage, setHeroImage] = useState<string | null>(null);
-    const [featureImage1, setFeatureImage1] = useState<string | null>(null);
-    const [featureImage2, setFeatureImage2] = useState<string | null>(null);
-    const [featureImage3, setFeatureImage3] = useState<string | null>(null);
-    const [secondaryHeroImage, setSecondaryHeroImage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchImages = async () => {
-            try {
-                // Prompt ajustado para: Professora e alunos
-                const heroPrompt = "Uma professora carismática ensinando educação financeira para um grupo de alunos em uma sala de aula moderna e colorida. Ela está apontando para um quadro interativo com ícones de moedas e gráficos de crescimento. Os alunos estão sorrindo e engajados. Estilo ilustração vetorial flat design, cores vibrantes, alta qualidade, sem distorções anatômicas.";
-                const feature1Prompt = "Um livro digital interativo com gráficos e ícones de quiz saindo dele.";
-                const feature2Prompt = "Um cofrinho de porco com uma medalha de ouro, cercado por moedas brilhantes.";
-                const feature3Prompt = "Um cérebro com uma lâmpada acesa dentro, simbolizando a criação de ideias e aprendizado personalizado.";
-                const secondaryHeroPrompt = "Uma mulher amigável apresentando um aplicativo em um tablet para duas crianças felizes e engajadas. O ambiente é uma sala de aula colorida e moderna. Estilo de ilustração vetorial, quente e convidativo.";
-
-                const [
-                    heroImgData,
-                    feature1ImgData,
-                    feature2ImgData,
-                    feature3ImgData,
-                    secondaryHeroImgData
-                ] = await Promise.all([
-                    generateLandingPageImage(heroPrompt),
-                    generateFeatureIcon(feature1Prompt),
-                    generateFeatureIcon(feature2Prompt),
-                    generateFeatureIcon(feature3Prompt),
-                    generateLandingPageImage(secondaryHeroPrompt)
-                ]);
-
-                setHeroImage(`data:image/png;base64,${heroImgData}`);
-                setFeatureImage1(`data:image/png;base64,${feature1ImgData}`);
-                setFeatureImage2(`data:image/png;base64,${feature2ImgData}`);
-                setFeatureImage3(`data:image/png;base64,${feature3ImgData}`);
-                setSecondaryHeroImage(`data:image/png;base64,${secondaryHeroImgData}`);
-            } catch (error) {
-                console.error("Falha ao gerar imagens para a landing page:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchImages();
-    }, []);
-
   return (
     <div className="bg-slate-900 text-slate-200">
       {/* Header */}
@@ -112,13 +57,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         </div>
                     </div>
                     <div>
-                        {isLoading ? (
-                             <ImagePlaceholder className="aspect-video" />
-                        ) : heroImage ? (
-                            <img src={heroImage} alt="Professora ensinando alunos sobre finanças" className="rounded-2xl shadow-2xl shadow-slate-900/50" />
-                        ) : (
-                            <ImagePlaceholder className="aspect-video" />
-                        )}
+                       <img src="/assets/hero-image.png" alt="Professora ensinando alunos sobre finanças" className="rounded-2xl shadow-2xl shadow-slate-900/50" />
                     </div>
                 </div>
             </div>
@@ -134,21 +73,21 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
                         <div className="h-24 flex items-center justify-center mb-4">
-                            {isLoading ? <Spinner/> : featureImage1 ? <img src={featureImage1} alt="Ícone de Cursos Interativos" className="h-24 w-24 object-contain" /> : <Spinner/>}
+                            <img src="/assets/feature-icon-1.png" alt="Ícone de Cursos Interativos" className="h-24 w-24 object-contain" />
                         </div>
                         <h3 className="text-xl font-bold text-white">Cursos Interativos</h3>
                         <p className="mt-2 text-slate-400">Aprenda sobre impostos, investimentos e orçamento com lições e quizzes criados por IA.</p>
                     </div>
                     <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
                         <div className="h-24 flex items-center justify-center mb-4">
-                           {isLoading ? <Spinner/> : featureImage2 ? <img src={featureImage2} alt="Ícone de Metas e Recompensas" className="h-24 w-24 object-contain" /> : <Spinner/>}
+                           <img src="/assets/feature-icon-2.png" alt="Ícone de Metas e Recompensas" className="h-24 w-24 object-contain" />
                         </div>
                         <h3 className="text-xl font-bold text-white">Metas e Recompensas</h3>
                         <p className="mt-2 text-slate-400">Defina suas metas financeiras e ganhe pontos ao completar cursos e desafios.</p>
                     </div>
                     <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700">
                         <div className="h-24 flex items-center justify-center mb-4">
-                            {isLoading ? <Spinner/> : featureImage3 ? <img src={featureImage3} alt="Ícone de Aprendizado Personalizado" className="h-24 w-24 object-contain" /> : <Spinner/>}
+                            <img src="/assets/feature-icon-3.png" alt="Ícone de Aprendizado Personalizado" className="h-24 w-24 object-contain" />
                         </div>
                         <h3 className="text-xl font-bold text-white">Aprendizado Personalizado</h3>
                         <p className="mt-2 text-slate-400">Crie seus próprios cursos sobre qualquer tópico financeiro que desejar aprender.</p>
@@ -174,13 +113,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLoginClick }) => {
                         </button>
                     </div>
                      <div>
-                        {isLoading ? (
-                             <ImagePlaceholder className="aspect-video" />
-                        ) : secondaryHeroImage ? (
-                            <img src={secondaryHeroImage} alt="Mulher mostrando o app para crianças" className="rounded-2xl shadow-2xl shadow-slate-900/50" />
-                        ) : (
-                             <ImagePlaceholder className="aspect-video" />
-                        )}
+                        <img src="/assets/secondary-hero-image.png" alt="Mulher mostrando o app para crianças" className="rounded-2xl shadow-2xl shadow-slate-900/50" />
                     </div>
                 </div>
             </div>
