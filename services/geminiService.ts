@@ -2,11 +2,11 @@
 import { GoogleGenAI, Type, Chat } from "@google/genai";
 import type { Course } from '../types';
 
-// Correção: A plataforma exige que a chave se chame API_KEY.
-const apiKey = process.env.API_KEY;
+// Correção: Em um projeto com build (Vite), a variável precisa ter o prefixo VITE_ e ser lida de import.meta.env.
+const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
 
 if (!apiKey) {
-    throw new Error("A variável de ambiente API_KEY não foi configurada. Verifique a configuração na Vercel.");
+    throw new Error("A variável de ambiente VITE_GEMINI_API_KEY não foi configurada. Verifique a configuração na Vercel.");
 }
 const ai = new GoogleGenAI({ apiKey });
 
